@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration status="INFO" monitorInterval="5">
+
+	<Properties>
+		<Property name="LOG_PATTERN"></Property>
+		%d{yyyy-MM-dd HH:mm:ss.SSS} %5p {hostName}
+	</Properties>
+
+	<Appender>
+		<File name="FileAppender" fileName="/logs/Bmtc.log">
+			<patterLayout pattern="${LOG_PATTERN}"></patterLayout>
+		</File>
+	</Appender>
+
+</configuration>
