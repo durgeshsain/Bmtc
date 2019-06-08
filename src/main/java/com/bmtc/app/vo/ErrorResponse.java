@@ -1,6 +1,7 @@
 package com.bmtc.app.vo;
 
 public class ErrorResponse {
+	
 	private int code;
 	private String reason;
 	public int getCode() {
