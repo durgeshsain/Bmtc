@@ -7,6 +7,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -16,6 +17,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import com.bmtc.app.dao.BmtcDAO;
 import com.bmtc.app.vo.BmtcRequest;
 import com.bmtc.app.vo.BmtcResponse;
+import com.bmtc.app.vo.Ticket;
 import com.bmtc.app.vo.Traveller;
 
 @Controller
@@ -48,10 +50,9 @@ public class BmtcController {
 		return new ResponseEntity<BmtcResponse>(resp, HttpStatus.CREATED);
 	}
 	
-	@RequestMapping(value= "/showTicket", method = RequestMethod.GET, consumes = MediaType.APPLICATION_JSON_VALUE)
-	public String showTicket(int travellerId) {
-		
-		return null;
+	@RequestMapping(value= "/showTicket/{tktno}", method = RequestMethod.GET, consumes = MediaType.APPLICATION_JSON_VALUE)
+	public ResponseEntity<Ticket> showTicket(@PathVariable(name = "tktno", required = true) int ticketNo) {
+		return new ResponseEntity<Ticket>(bmtcDao.showTicket(ticketNo), HttpStatus.CREATED);
 	}
 
 }

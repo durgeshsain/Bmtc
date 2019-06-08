@@ -1,9 +1,12 @@
 package com.bmtc.app.vo;
 
+import java.io.Serializable;
+
 import org.springframework.stereotype.Component;
 
 @Component
-public class Bus {
+public class Bus implements Serializable {
+	private static final long serialVersionUID = 7886605544787831891L;
 	private String busNo;
 	private String busName;
 	private String source;

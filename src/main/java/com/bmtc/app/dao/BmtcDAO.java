@@ -2,6 +2,7 @@ package com.bmtc.app.dao;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import org.apache.logging.log4j.LogManager;
@@ -10,15 +11,18 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import com.bmtc.app.vo.Bus;
-import com.bmtc.app.vo.Tickets;
+import com.bmtc.app.vo.Ticket;
 import com.bmtc.app.vo.Traveller;
+import com.hazelcast.core.HazelcastInstance;
 
 @Repository
 public class BmtcDAO {
 	private List<Bus> busList = new ArrayList<Bus>();
-	private List<Tickets> ticket = new ArrayList<Tickets>();
+	//private List<Tickets> ticket = new ArrayList<Tickets>();
+	//@Autowired
+	//private Ticket ticket;
 	@Autowired
-	private Tickets tickets;
+	private HazelcastInstance storage;
 	private static AtomicInteger ticketNumber = new AtomicInteger(0);
 	
 	private static final Logger logg = LogManager.getLogger(BmtcDAO.class);
@@ -31,27 +35,37 @@ public class BmtcDAO {
 	}
 	
 	public int bookTicket(Traveller traveller, String busNo, int numOfSeats) throws Exception {
-		
+		Ticket ticket = new Ticket();
 		logg.info("Inside dao: " + traveller);
 		Bus bus = getBus(busNo);
-		logg.warn("Bus returned : " + bus);
+		logg.debug("Bus returned : " + bus);
 		if(null==bus) {
 			throw new Exception("Invalid Bus number");
 		}
 		synchronized (bus) {
 			if(null != bus && bus.getNoOfSeat() - numOfSeats > 0) {
 				bus.setRemainingSeats(bus.getRemainingSeats() - numOfSeats);
-				tickets.setTicketNumber(ticketNumber.get());
-				tickets.setBus(bus);
-				tickets.setTraveller(traveller);
-				tickets.setSeatsBooked(numOfSeats);
-				ticket.add(tickets);
-				logg.info("Tickets booked"+tickets.toString());
+				ticket.setTicketNumber(ticketNumber.get());
+				ticket.setBus(bus);
+				ticket.setTraveller(traveller);
+				ticket.setSeatsBooked(numOfSeats);
+				
+				//Hazelcast store
+				Map<Integer, Ticket> map = storage.getMap("my-map123");
+				//System.out.println(map);
+				map.put(ticket.getTicketNumber(), ticket);
+				//tickets.add(tickets);
+				logg.info("Tickets booked"+ticket.toString());
 				ticketNumber.getAndAdd(1);
 			}
 		}
 		logg.info("Bus: " + bus);
-		return tickets.getTicketNumber();
+		return ticket.getTicketNumber();
+	}
+	
+	public Ticket showTicket(int ticketNo) {
+		Map<Integer, Ticket> map = storage.getMap("my-map123");
+		return map.get(ticketNo);
 	}
 	
 	private Bus getBus(String busNo) {

@@ -1,9 +1,12 @@
 package com.bmtc.app.vo;
 
+import java.io.Serializable;
+
 import org.springframework.stereotype.Component;
 
 @Component
-public class Traveller {
+public class Traveller implements Serializable {
+	private static final long serialVersionUID = 4204413061276768159L;
 	private int travellerId;
 	private String name;
 	private String email;
