@@ -1,0 +1,11 @@
+localhost:8088/book
+{
+	"traveller": {
+		"name": "K16. Sain",
+		"email": "k.sain@gmail.com",
+		"age": "65",
+		"aadhar": "1234"
+	},
+	"busBooked": "500D",
+	"seatBooked": "2"
+}
