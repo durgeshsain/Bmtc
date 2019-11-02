@@ -1,26 +1,58 @@
 package com.bmtc.app.vo;
 
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.Table;
+
 import org.springframework.stereotype.Component;
 
 @Component
+@Entity
+@Table(name = "BmtcBus")
 public class Bus {
+	@Id
+	@GeneratedValue(strategy = GenerationType.AUTO)
+	@Column(name = "bus_id")
+	private int busId;
+	@Column(name = "bus_no")
 	private String busNo;
+	@Column(name = "bus_name")
 	private String busName;
+	@Column(name = "source")
 	private String source;
+	@Column(name = "destination")
 	private String destinition;
+	@Column(name = "number_of_seats")
 	private int noOfSeat;
-	private int remainingSeats;
+	/*@Transient
+	private int remainingSeats;*/
 	public Bus() {
+		
 	}
-	public Bus(String busNo, String busName, String source, String destinition, int noOfSeat, int remainingSeats) {
+	
+	public Bus(int busId, String busNo, String busName, String source, String destinition, int noOfSeat) {
+		
 		super();
+		this.busId = busId;
 		this.busNo = busNo;
 		this.busName = busName;
 		this.source = source;
 		this.destinition = destinition;
 		this.noOfSeat = noOfSeat;
-		this.remainingSeats = remainingSeats;
+		//this.remainingSeats = remainingSeats;
 	}
+	
+	public int getBusId() {
+		return busId;
+	}
+
+	public void setBusId(int busId) {
+		this.busId = busId;
+	}
+
 	public String getBusNo() {
 		return busNo;
 	}
@@ -51,15 +83,16 @@ public class Bus {
 	public void setNoOfSeat(int noOfSeat) {
 		this.noOfSeat = noOfSeat;
 	}
-	public int getRemainingSeats() {
+	/*public int getRemainingSeats() {
 		return remainingSeats;
 	}
 	public void setRemainingSeats(int remainingSeats) {
 		this.remainingSeats = remainingSeats;
-	}
+	}*/
+	
 	@Override
 	public String toString() {
 		return "Bus [busNo=" + busNo + ", busName=" + busName + ", source=" + source + ", destinition=" + destinition
-				+ ", noOfSeat=" + noOfSeat + ", remainingSeats=" + remainingSeats + "]";
+				+ ", noOfSeat=" + noOfSeat + "]";
 	}
 }

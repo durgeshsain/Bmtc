@@ -1,6 +1,7 @@
 package com.bmtc.app.vo;
 
 public class BmtcRequest {
+	
 	private Traveller traveller;
 	private String busBooked;
 	private int seatBooked;
