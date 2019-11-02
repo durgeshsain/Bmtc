@@ -9,15 +9,24 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
+import org.springframework.web.client.HttpClientErrorException.BadRequest;
 
 import com.bmtc.app.dao.BmtcDAO;
+import com.bmtc.app.dto.AuthenticationRequest;
+import com.bmtc.app.dto.AuthenticationResponse;
 import com.bmtc.app.model.BmtcTicketModel;
+import com.bmtc.app.serviceImpl.MyUserDetailsService;
+import com.bmtc.app.util.JwtUtil;
 import com.bmtc.app.vo.BmtcRequest;
 import com.bmtc.app.vo.BmtcResponse;
 import com.bmtc.app.vo.ShowTicket;
@@ -37,6 +46,14 @@ public class BmtcController {
 	private ShowTicket showTicket;
 	@Autowired
 	private BmtcTicketModel bmtcTicketModel;
+	@Autowired
+	private AuthenticationManager authenticationManager;
+	@Autowired
+	private MyUserDetailsService myUserDetailsService;
+	@Autowired
+	private JwtUtil jwtUtil;
+	
+	
 	@RequestMapping("/")
 	@ResponseBody
 	public ResponseEntity<String> works() {
@@ -66,9 +83,26 @@ public class BmtcController {
 	@RequestMapping(value= "/showTicket", method = RequestMethod.GET, consumes = MediaType.APPLICATION_JSON_VALUE)
 	public ShowTicket showTicket(@PathParam("travellerName") String travellerName) {
 		
-		showTicket = bmtcDao.showTicket(travellerName);
+		//showTicket = bmtcDao.showTicket(travellerName);
 		System.out.println("Tickets are :"+tickets.toString());
 		return null;
+	}
+	
+	@RequestMapping(value = "/authenticate", method = RequestMethod.POST)
+	public ResponseEntity<AuthenticationResponse> createAuthenticationToken(@RequestBody AuthenticationRequest authenticationRequest) throws Exception {
+		
+		try {
+		authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(authenticationRequest.getUsername(), 
+				authenticationRequest.getPassword()));
+		}catch(BadCredentialsException e) {
+			throw new Exception("Wrong credentials");
+		}
+		
+		final UserDetails userDetails = myUserDetailsService.loadUserByUsername(authenticationRequest.getUsername());
+		
+		final String jwt = jwtUtil.generateToken(userDetails);
+		
+		return new ResponseEntity<AuthenticationResponse>(new AuthenticationResponse(jwt), HttpStatus.OK);
 	}
 	
 
