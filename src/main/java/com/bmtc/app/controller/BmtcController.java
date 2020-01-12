@@ -67,7 +67,7 @@ public class BmtcController {
 		if(bookingDetails.getTraveller().getAge() < 0) {
 			throw new Exception("Enter proper age");
 		}
-		logg.info("My dad's name is " + bookingDetails.getTraveller().getName());
+		logg.info("Traveller name is " + bookingDetails.getTraveller().getName());
 		traveller = bookingDetails.getTraveller();
 		String busNo = bookingDetails.getBusBooked();
 		int numOfSeats = bookingDetails.getSeatBooked();
