@@ -63,7 +63,7 @@ public class BmtcController {
 	@RequestMapping(value = "/book", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
 	//@ResponseStatus(value = HttpStatus.CREATED)
 	public ResponseEntity<BmtcTicketModel> book(@RequestBody BmtcRequest bookingDetails) throws Exception {
-		logg.info("Inside book Method");
+		logg.info("Inside BmtcController :: book Method");
 		if(bookingDetails.getTraveller().getAge() < 0) {
 			throw new Exception("Enter proper age");
 		}
