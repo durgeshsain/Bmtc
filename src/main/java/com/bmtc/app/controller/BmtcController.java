@@ -67,16 +67,11 @@ public class BmtcController {
 		if(bookingDetails.getTraveller().getAge() < 0) {
 			throw new Exception("Enter proper age");
 		}
-		logg.info("Traveller name is " + bookingDetails.getTraveller().getName());
+		logg.info("Traveller names are " + bookingDetails.getTraveller().getName());
 		traveller = bookingDetails.getTraveller();
 		String busNo = bookingDetails.getBusBooked();
 		int numOfSeats = bookingDetails.getSeatBooked();
 		bmtcTicketModel = bmtcDao.bookTicket(traveller, busNo, numOfSeats);
-		/*BmtcResponse bmtcResponse = new BmtcResponse();
-		bmtcResponse.setTicketid(bmtcTicketModel.getTicket_id());
-		bmtcResponse.setPasssengerName(bmtcTicketModel.getPassengerName());
-		bmtcResponse.setNoOfSeatsBooked(bmtcTicketModel.getNumSeatsBooked());
-		bmtcResponse.setBusNo(bmtcTicketModel.getBusNo());*/
 		return new ResponseEntity<BmtcTicketModel>(bmtcTicketModel, HttpStatus.CREATED);
 	}
 	
@@ -95,7 +90,7 @@ public class BmtcController {
 		authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(authenticationRequest.getUsername(), 
 				authenticationRequest.getPassword()));
 		}catch(BadCredentialsException e) {
-			throw new Exception("Wrong credentials");
+			throw new Exception("Wrong credentials provided");
 		}
 		
 		final UserDetails userDetails = myUserDetailsService.loadUserByUsername(authenticationRequest.getUsername());
