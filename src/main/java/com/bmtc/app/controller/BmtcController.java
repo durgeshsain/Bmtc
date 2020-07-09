@@ -14,26 +14,31 @@ import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
+import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.client.HttpClientErrorException.BadRequest;
 
 import com.bmtc.app.dao.BmtcDAO;
 import com.bmtc.app.dto.AuthenticationRequest;
 import com.bmtc.app.dto.AuthenticationResponse;
 import com.bmtc.app.model.BmtcTicketModel;
+import com.bmtc.app.service.BmtcAdminService;
 import com.bmtc.app.serviceImpl.MyUserDetailsService;
 import com.bmtc.app.util.JwtUtil;
 import com.bmtc.app.vo.BmtcRequest;
 import com.bmtc.app.vo.BmtcResponse;
+import com.bmtc.app.vo.BmtcRouteRequest;
+import com.bmtc.app.vo.BmtcRouteResponse;
 import com.bmtc.app.vo.ShowTicket;
 import com.bmtc.app.vo.Tickets;
 import com.bmtc.app.vo.Traveller;
 
-@Controller
+@RestController
 public class BmtcController {
 	private static final Logger logg = LogManager.getLogger(BmtcController.class);
 	@Autowired
@@ -52,6 +57,8 @@ public class BmtcController {
 	private MyUserDetailsService myUserDetailsService;
 	@Autowired
 	private JwtUtil jwtUtil;
+	@Autowired
+	private BmtcAdminService bmtcAdminService;
 	
 	
 	@RequestMapping("/")
@@ -61,13 +68,13 @@ public class BmtcController {
 	}
 	
 	@RequestMapping(value = "/book", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-	//@ResponseStatus(value = HttpStatus.CREATED)
 	public ResponseEntity<BmtcTicketModel> book(@RequestBody BmtcRequest bookingDetails) throws Exception {
 		logg.info("Inside BmtcController :: book Method");
 		if(bookingDetails.getTraveller().getAge() < 0) {
 			throw new Exception("Enter proper age");
 		}
 		logg.info("Traveller names are " + bookingDetails.getTraveller().getName());
+		int a = 2/0;
 		traveller = bookingDetails.getTraveller();
 		String busNo = bookingDetails.getBusBooked();
 		int numOfSeats = bookingDetails.getSeatBooked();
@@ -98,6 +105,14 @@ public class BmtcController {
 		final String jwt = jwtUtil.generateToken(userDetails);
 		
 		return new ResponseEntity<AuthenticationResponse>(new AuthenticationResponse(jwt), HttpStatus.OK);
+	}
+	
+	@PostMapping("/createRoute")
+	public ResponseEntity<BmtcRouteResponse> createRoute(@RequestBody BmtcRouteRequest bmtcRouteRequest) {
+		
+		bmtcDao.addRoute(bmtcRouteRequest);
+		return new ResponseEntity<BmtcRouteResponse>(new BmtcRouteResponse(), HttpStatus.CREATED);
+		
 	}
 	
 

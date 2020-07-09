@@ -1,7 +1,7 @@
 # to download jdk image.
 FROM openjdk:8
 # Copy the jar file from local to docker image
-ADD target/booking-0.0.1-SNAPSHOT.jar booking-0.0.1-SNAPSHOT.jar
+ADD target/bmtc-booking-0.0.1-SNAPSHOT.jar booking-0.0.1-SNAPSHOT.jar
 # Expose port
 EXPOSE 8081
 # Tell how to run the copied jar file

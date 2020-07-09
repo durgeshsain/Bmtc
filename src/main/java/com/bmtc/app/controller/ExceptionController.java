@@ -17,7 +17,7 @@ public class ExceptionController {
 	@ExceptionHandler(value = Exception.class)
 	@ResponseStatus(value = HttpStatus.EXPECTATION_FAILED)
 	public ResponseEntity<ErrorResponse> handleException(Exception e) {
-		logg.info("Inside Exception: " + e.getMessage());
+		logg.info("Inside Exceptionnn: " + e.getMessage());
 		
 		ErrorResponse resp = new ErrorResponse();
 		resp.setCode(HttpStatus.BAD_GATEWAY.value());

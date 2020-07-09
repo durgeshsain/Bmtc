@@ -9,8 +9,12 @@ import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
+import com.bmtc.app.client.BmtcBusClient;
+import com.bmtc.app.client.BmtcBusClients;
 import com.bmtc.app.model.BmtcTicketModel;
+import com.bmtc.app.model.TravellerModel;
 import com.bmtc.app.repository.BmtcTicketModelRepository;
+import com.bmtc.app.vo.BmtcRouteRequest;
 import com.bmtc.app.vo.Bus;
 import com.bmtc.app.vo.ShowTicket;
 import com.bmtc.app.vo.Tickets;
@@ -28,6 +32,10 @@ public class BmtcDAO {
 	private BmtcTicketModelRepository bmtcTicketModelRepository;
 	@Autowired
 	private static AtomicInteger ticketNumber = new AtomicInteger(0);
+	@Autowired
+	private BmtcBusClient bmtcBusClient;
+	@Autowired
+	private BmtcBusClients bmtcBusClients;
 	
 	private static final Logger logg = LogManager.getLogger(BmtcDAO.class);
 	
@@ -42,6 +50,7 @@ public class BmtcDAO {
 	public BmtcTicketModel bookTicket(Traveller traveller, String busNo, int numOfSeats) throws Exception {
 
 		logg.info("Inside dao: " + traveller);
+		//List<Bus> bus = bmtcBusClients.getBus(busNo);
 		Bus bus = getBus(busNo);
 		logg.warn("Bus returned : " + bus);
 		if (null == bus) {
@@ -52,10 +61,17 @@ public class BmtcDAO {
 			 * if(null != bus && bus.getNoOfSeat() - numOfSeats > 0) {
 			 * bus.setRemainingSeats(bus.getRemainingSeats() - numOfSeats);
 			 */
+			TravellerModel travellerModel = new TravellerModel();
+			travellerModel.setName(traveller.getName());
+			travellerModel.setAge(traveller.getAge());
+			travellerModel.setAadhar(traveller.getAadhar());
+			travellerModel.setEmail(traveller.getEmail());
 			BmtcTicketModel bmtcTicketModel = new BmtcTicketModel();
 			bmtcTicketModel.setPassengerName(traveller.getName());
 			bmtcTicketModel.setNumSeatsBooked(numOfSeats);
 			bmtcTicketModel.setBusNo(bus.getBusNo());
+			bmtcTicketModel.setTraveller(travellerModel);
+			//travellerModel.setBmtcTicketModel(bmtcTicketModel);
 			System.out.println(bmtcTicketModel);
 			logg.info("Tickets booked");
 			return bmtcTicketModel = bmtcTicketModelRepository.save(bmtcTicketModel);
@@ -86,6 +102,12 @@ public class BmtcDAO {
 			}
 		}
 		return null;
+		
+	}
+
+	public void addRoute(BmtcRouteRequest bmtcRouteRequest) {
+		// Add new Route
+		
 		
 	}
 }
