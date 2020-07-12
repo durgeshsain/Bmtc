@@ -6,7 +6,6 @@ pipeline {
 		stage('Build') {
 		 steps {
 		 	echo 'LOL'
-		 	withMaven(maven : 'maven_3.6.3')
 		 	sh 'mvn clean install'
 		 }
 		}
